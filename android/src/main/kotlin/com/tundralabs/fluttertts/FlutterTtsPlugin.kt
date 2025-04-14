@@ -5,7 +5,6 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -13,7 +12,6 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ParcelFileDescriptor
 import android.provider.MediaStore
-import android.provider.OpenableColumns
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
@@ -23,7 +21,6 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 import java.io.File
 import java.lang.reflect.Field
 import java.util.Locale
@@ -615,6 +612,11 @@ class FlutterTtsPlugin : MethodCallHandler, FlutterPlugin {
     // Add voice properties into the voice map
     fun readVoiceProperties(map: MutableMap<String, String>, voice: Voice) {
         map["name"] = voice.name
+        map["identifier"] = voice.name
+        map["gender"] = if (voice.name.contains("female"))
+            "female"
+        else
+            if (voice.name.contains("male")) "male" else "unspecified"
         map["locale"] = voice.locale.toLanguageTag()
         map["quality"] = qualityToString(voice.quality)
         map["latency"] = latencyToString(voice.latency)
